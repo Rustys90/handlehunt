@@ -17,31 +17,26 @@ const MARKET_CARDS: ArcCard[] = [
   { handle: "noirx", price: "$640", status: "available", note: "Dark brand vibe", color: "#c3e3f4" },
   { handle: "lune", price: "$1,450", status: "out", note: "Premium short", color: "#f0e4c0" },
   { handle: "rift", price: "$720", status: "available", note: "Tech-ready", color: "#dcd2f2" },
-  { handle: "opal9", price: "$390", status: "available", note: "5-char gem", color: "#f3cdd6" },
-  { handle: "zeno", price: "$1,100", status: "available", note: "Name-style", color: "#dcedc2" },
-  { handle: "xoe", price: "$4,800", status: "out", note: "Ultra short", color: "#c3e3f4" },
+  { handle: "opal9", price: "$390", status: "available", note: "5-char gem", color: "#ffd6e8" },
+  { handle: "zeno", price: "$1,100", status: "available", note: "Name-style", color: "#c8f0d8" },
+  { handle: "xoe", price: "$4,800", status: "out", note: "Ultra short", color: "#d4e4ff" },
+  { handle: "mira", price: "$1,350", status: "available", note: "Soft brandable", color: "#ffe0c2" },
+  { handle: "kivu", price: "$560", status: "available", note: "Rare 4-char", color: "#e0d4ff" },
+  { handle: "selo", price: "$890", status: "available", note: "Clean vowel mix", color: "#d2f5e8" },
+  { handle: "qora", price: "$1,050", status: "out", note: "Q-series short", color: "#ffd0d0" },
+  { handle: "nyx7", price: "$420", status: "available", note: "Dark + digit", color: "#c9d8ff" },
+  { handle: "vex", price: "$3,200", status: "out", note: "3-char power", color: "#f5e6c8" },
 ];
 
 function indexToHandle(index: number, length: number): string {
-  let n = index;
-  let s = "";
-  for (let i = 0; i < length; i++) {
-    s = CHARSET[n % BASE] + s;
-    n = Math.floor(n / BASE);
-  }
+  let n = index; let s = "";
+  for (let i = 0; i < length; i++) { s = CHARSET[n % BASE] + s; n = Math.floor(n / BASE); }
   return s;
 }
-function totalCombos(length: number) {
-  return Math.pow(BASE, length);
-}
+function totalCombos(length: number) { return Math.pow(BASE, length); }
 function Logo({ size = 48 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 120 120" fill="white" aria-hidden>
-      <path d={LOGO_PATH} />
-    </svg>
-  );
+  return (<svg width={size} height={size} viewBox="0 0 120 120" fill="white" aria-hidden><path d={LOGO_PATH} /></svg>);
 }
-
 type Found = { handle: string; confidence: number; at: number };
 
 export default function Home() {
@@ -49,11 +44,9 @@ export default function Home() {
   const { scrollY } = useScroll({ container: containerRef });
   const cloudYDesktop = useTransform(scrollY, [0, 300], [0, -100]);
   const cloudYMobile = useTransform(scrollY, [0, 300], [0, -24]);
-
   const [query, setQuery] = useState("");
   const [checking, setChecking] = useState(false);
   const [result, setResult] = useState<{ status: string; confidence: number; message: string } | null>(null);
-
   const [scanLen, setScanLen] = useState<3 | 4>(3);
   const [scanning, setScanning] = useState(false);
   const [scanIndex, setScanIndex] = useState(0);
@@ -71,34 +64,24 @@ export default function Home() {
         setScanIndex(data.index || 0);
         indexRef.current = data.index || 0;
         setFound(data.found || []);
-      } else {
-        setScanIndex(0);
-        indexRef.current = 0;
-        setFound([]);
-      }
+      } else { setScanIndex(0); indexRef.current = 0; setFound([]); }
     } catch {}
     lenRef.current = scanLen;
   }, [scanLen]);
 
   const persist = useCallback((index: number, foundList: Found[]) => {
-    try {
-      localStorage.setItem("hh_scan_" + lenRef.current, JSON.stringify({ index, found: foundList.slice(0, 200) }));
-    } catch {}
+    try { localStorage.setItem("hh_scan_" + lenRef.current, JSON.stringify({ index, found: foundList.slice(0, 200) })); } catch {}
   }, []);
 
   const runCheck = useCallback(async () => {
     const u = query.trim().toLowerCase().replace(/[^a-z0-9._]/g, "");
     if (!u) return;
-    setChecking(true);
-    setResult(null);
+    setChecking(true); setResult(null);
     try {
       const res = await fetch("/api/check?username=" + encodeURIComponent(u));
       setResult(await res.json());
-    } catch {
-      setResult({ status: "unknown", confidence: 0, message: "Check failed." });
-    } finally {
-      setChecking(false);
-    }
+    } catch { setResult({ status: "unknown", confidence: 0, message: "Check failed." }); }
+    finally { setChecking(false); }
   }, [query]);
 
   useEffect(() => {
@@ -112,8 +95,7 @@ export default function Home() {
       let localFound = [...found];
       while (scanningRef.current && !cancelled && idx < total) {
         const handle = indexToHandle(idx, lenRef.current);
-        setLastChecked(handle);
-        setScanIndex(idx);
+        setLastChecked(handle); setScanIndex(idx);
         try {
           const res = await fetch("/api/check?username=" + encodeURIComponent(handle));
           const data = await res.json();
@@ -122,18 +104,14 @@ export default function Home() {
             setFound(localFound);
           }
         } catch {}
-        idx += 1;
-        indexRef.current = idx;
+        idx += 1; indexRef.current = idx;
         if (idx % 5 === 0) persist(idx, localFound);
         await delay(450);
       }
       persist(indexRef.current, localFound);
       if (idx >= total) setScanning(false);
     })();
-    return () => {
-      cancelled = true;
-      scanningRef.current = false;
-    };
+    return () => { cancelled = true; scanningRef.current = false; };
   }, [scanning]);
 
   const total = totalCombos(scanLen);
@@ -197,10 +175,7 @@ export default function Home() {
           )}
 
           <h3 className="font-italiana text-3xl text-white mb-3">Exhaustive 3 / 4 character scan</h3>
-          <p className="text-white/60 text-sm mb-6 max-w-xl">
-            Every combination of a–z and 0–9 ({BASE}<sup>3</sup> = {totalCombos(3).toLocaleString()} · {BASE}<sup>4</sup> = {totalCombos(4).toLocaleString()}).
-            Runs only while this page is open.
-          </p>
+          <p className="text-white/60 text-sm mb-6 max-w-xl">Every combination of a–z and 0–9. Runs only while this page is open.</p>
           <div className="flex flex-wrap gap-3 mb-6">
             {([3, 4] as const).map((n) => (
               <button key={n} type="button" disabled={scanning} onClick={() => setScanLen(n)} className={"px-5 py-2 rounded-full text-sm uppercase tracking-wider border " + (scanLen === n ? "bg-white text-black border-white" : "border-white/30 text-white")}>
@@ -215,8 +190,10 @@ export default function Home() {
           <div className="rounded-2xl border border-white/15 bg-white/5 p-5 mb-6">
             <p className="text-xs text-white/50 uppercase tracking-widest mb-2">Progress</p>
             <p className="text-white font-mono text-sm">@{lastChecked || "—"} · {scanIndex.toLocaleString()} / {total.toLocaleString()} ({pct}%)</p>
-            <div className="mt-3 h-1.5 rounded-full bg-white/10 overflow-hidden">
-              <div className="h-full bg-[#FF0000]" style={{ width: Math.min(100, Number(pct)) + "%" }} />
+            <div className="mt-4 h-2.5 rounded-full bg-white/10 overflow-hidden relative">
+              <div className="h-full rounded-full progress-fill relative overflow-hidden" style={{ width: Math.min(100, Math.max(scanning ? 1.2 : 0.5, Number(pct))) + "%" }}>
+                <span className="progress-shine absolute inset-0" />
+              </div>
             </div>
           </div>
           {found.length > 0 && (
@@ -232,10 +209,10 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="marketplace" className="relative w-full bg-[#0a0a0a] py-16 border-t border-white/10 overflow-hidden">
-        <div className="px-5 md:px-16 mb-6">
+      <section id="marketplace" className="relative w-full bg-[#0a0a0a] pt-14 pb-8 border-t border-white/10 overflow-hidden">
+        <div className="px-5 md:px-16 mb-2">
           <p className="text-[11px] uppercase tracking-[0.2em] text-white/50 mb-3">Marketplace</p>
-          <h2 className="font-italiana text-4xl md:text-5xl text-white mb-3">Listed handles</h2>
+          <h2 className="font-italiana text-4xl md:text-5xl text-white mb-2">Listed handles</h2>
           <p className="text-white/70 text-sm max-w-2xl">Arc carousel — drag or scroll. Buy opens Telegram.</p>
         </div>
         <ArcFlowCarousel cards={MARKET_CARDS} />
