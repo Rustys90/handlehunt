@@ -1,21 +1,69 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 :root {
   --font-manrope: "Manrope", sans-serif;
   --font-italiana: "Italiana", serif;
   --font-marck: "Marck Script", cursive;
 }
+
 html { scroll-behavior: smooth; }
-body { margin: 0; font-family: var(--font-manrope); background: #000; color: #fff; overflow-x: hidden; }
+body {
+  margin: 0;
+  font-family: var(--font-manrope);
+  background: #000;
+  color: #fff;
+  overflow-x: hidden;
+}
 .font-italiana { font-family: var(--font-italiana); }
 .font-marck { font-family: var(--font-marck); }
 .font-manrope { font-family: var(--font-manrope); }
+
 .market-track {
-  display: flex; gap: 1rem; overflow-x: auto; scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch; padding: 0.5rem 1.25rem 1.5rem;
-  scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.25) transparent;
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding: 0.5rem 1.25rem 1.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
 }
 .market-track::-webkit-scrollbar { height: 6px; }
-.market-track::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.25); border-radius: 999px; }
-.market-card { scroll-snap-align: center; flex: 0 0 min(280px, 78vw); }
+.market-track::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+}
+.market-card {
+  scroll-snap-align: center;
+  flex: 0 0 min(280px, 78vw);
+}
+
+.progress-fill {
+  background: linear-gradient(90deg, #ff1a1a 0%, #ff4d4d 40%, #ff7a7a 70%, #ff1a1a 100%);
+  background-size: 200% 100%;
+  animation: progress-flow 1.6s linear infinite;
+  transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 0 12px rgba(255, 40, 40, 0.55);
+}
+
+.progress-shine {
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.45) 50%,
+    transparent 70%
+  );
+  animation: progress-shine 1.8s ease-in-out infinite;
+}
+
+@keyframes progress-flow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+@keyframes progress-shine {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(120%); }
+}
