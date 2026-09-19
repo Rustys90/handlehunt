@@ -1,462 +1,186 @@
 "use client";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { Loader2, Search, ExternalLink } from "lucide-react";
 
-// Working public assets (Cloudinary cloud from the prompt is disabled)
-const WORLD_BG =
-  "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=1920&q=80";
-const PORTAL_BG =
-  "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1920&q=80";
-const CLOUDS_BG =
-  "https://images.unsplash.com/photo-1534088568595-a066f410bcda?auto=format&fit=crop&w=1920&q=70";
+const HERO_VIDEO = "https://pub-86dc5b5484314368ac5436a674b0d919.r2.dev/cloudinarry%20to%20cloudflare/baby-track-video_crqby5.mp4";
+const BOTTOM_VIDEO = "https://pub-86dc5b5484314368ac5436a674b0d919.r2.dev/cloudinarry%20to%20cloudflare/track-video_2_haxdch.mp4";
 const TELEGRAM = "https://t.me/rareinsta";
+const LOGO_PATH = "M60 120C26.8629 120 0 93.1371 0 60V0C22.5654 0 42.2213 12.4569 52.4662 30.8691C38.4788 34.2089 28.0787 46.7902 28.0787 61.8006V63.1443C28.0787 79.9648 41.7146 93.6006 58.5353 93.6006H59.8789L59.8785 61.8006C59.8785 79.3633 74.1159 93.6006 91.6787 93.6006L91.6787 61.8006C91.6787 44.2783 77.5071 30.0661 60 30.0008L60 0H62.5352C94.2722 0 120 25.7279 120 57.4648V60C120 93.1371 93.1371 120 60 120Z";
 
-function clamp(v: number, a: number, b: number) {
-  return Math.min(b, Math.max(a, v));
-}
-function lerp(a: number, b: number, t: number) {
-  return a + (b - a) * t;
-}
-function easeInOut(t: number) {
-  return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+type Listing = { handle: string; price: string; status: "available" | "out"; note: string };
+const LISTINGS: Listing[] = [
+  { handle: "vyra", price: "$1,200", status: "available", note: "Brandable 4-letter" },
+  { handle: "kade", price: "$980", status: "available", note: "Clean dictionary" },
+  { handle: "noirx", price: "$640", status: "available", note: "Dark brand vibe" },
+  { handle: "lune", price: "$1,450", status: "out", note: "Premium short" },
+  { handle: "rift", price: "$720", status: "available", note: "Tech-ready" },
+  { handle: "opal9", price: "$390", status: "available", note: "5-char gem" },
+  { handle: "zeno", price: "$1,100", status: "available", note: "Name-style" },
+  { handle: "xoe", price: "$4,800", status: "out", note: "Ultra short" },
+];
+
+function Logo({ size = 48 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 120 120" fill="white" aria-hidden>
+      <path d={LOGO_PATH} />
+    </svg>
+  );
 }
 
 export default function Home() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const worldRef = useRef<HTMLDivElement>(null);
-  const cloudsRef = useRef<HTMLDivElement>(null);
-  const portalRef = useRef<HTMLDivElement>(null);
-  const curtainLRef = useRef<HTMLDivElement>(null);
-  const curtainRRef = useRef<HTMLDivElement>(null);
+  const { scrollY } = useScroll({ container: containerRef });
+  const cloudYDesktop = useTransform(scrollY, [0, 300], [0, -100]);
+  const cloudYMobile = useTransform(scrollY, [0, 300], [0, -24]);
+  const [query, setQuery] = useState("");
+  const [checking, setChecking] = useState(false);
+  const [result, setResult] = useState<{ status: string; confidence: number; message: string } | null>(null);
 
-  const [p, setP] = useState(0);
-  const [uiVisible, setUiVisible] = useState(false);
-  const [curtainsOpen, setCurtainsOpen] = useState(false);
-  const [entranceDone, setEntranceDone] = useState(false);
-
-  const mouseTarget = useRef({ x: 0, y: 0 });
-  const mouseSmooth = useRef({ x: 0, y: 0 });
-  const rafRef = useRef(0);
-
-  const onScroll = useCallback(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const max = el.scrollHeight - window.innerHeight;
-    setP(clamp(max > 0 ? window.scrollY / max : 0, 0, 1));
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [onScroll]);
-
-  useEffect(() => {
-    const t1 = setTimeout(() => setCurtainsOpen(true), 120);
-    const t2 = setTimeout(() => setUiVisible(true), 650);
-    const t3 = setTimeout(() => setEntranceDone(true), 2200);
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-      clearTimeout(t3);
-    };
-  }, []);
-
-  useEffect(() => {
-    const onMove = (e: MouseEvent) => {
-      const cx = window.innerWidth / 2;
-      const cy = window.innerHeight / 2;
-      mouseTarget.current = {
-        x: (e.clientX - cx) / cx,
-        y: (e.clientY - cy) / cy,
-      };
-    };
-    window.addEventListener("mousemove", onMove, { passive: true });
-
-    const tick = () => {
-      mouseSmooth.current.x += (mouseTarget.current.x - mouseSmooth.current.x) * 0.07;
-      mouseSmooth.current.y += (mouseTarget.current.y - mouseSmooth.current.y) * 0.07;
-      const mx = mouseSmooth.current.x;
-      const my = mouseSmooth.current.y;
-      const el = containerRef.current;
-      const max = el ? el.scrollHeight - window.innerHeight : 1;
-      const e = easeInOut(clamp(max > 0 ? window.scrollY / max : 0, 0, 1));
-
-      if (worldRef.current) {
-        worldRef.current.style.transform =
-          "translate(" + -mx * 6 + "px," + -my * 6 + "px) scale(" + lerp(1, 1.18, e) + ")";
-      }
-      if (cloudsRef.current) {
-        cloudsRef.current.style.transform =
-          "translate(" + -mx * 9 + "px," + -my * 3.6 + "px) scale(" + lerp(1, 1.35, e) + ")";
-      }
-      if (portalRef.current) {
-        portalRef.current.style.transform =
-          "translate(" + -mx * 7 + "px," + -my * 7 + "px) scale(" + lerp(1, 6.5, e) + ")";
-      }
-      if (curtainLRef.current) {
-        const ox = curtainsOpen ? -70 : 0;
-        curtainLRef.current.style.transform =
-          "translate(" +
-          (ox + lerp(0, 40, e) - mx * 10) +
-          "%," +
-          -my * 3 +
-          "px) scale(" +
-          lerp(1, 1.15, e) +
-          ")";
-      }
-      if (curtainRRef.current) {
-        const ox = curtainsOpen ? 70 : 0;
-        curtainRRef.current.style.transform =
-          "translate(" +
-          (ox + lerp(0, -40, e) - mx * 10) +
-          "%," +
-          -my * 3 +
-          "px) scale(" +
-          lerp(1, 1.15, e) +
-          ")";
-      }
-      rafRef.current = requestAnimationFrame(tick);
-    };
-    rafRef.current = requestAnimationFrame(tick);
-    return () => {
-      window.removeEventListener("mousemove", onMove);
-      cancelAnimationFrame(rafRef.current);
-    };
-  }, [curtainsOpen]);
-
-  useEffect(() => {
-    const style = entranceDone ? "none" : "transform 1.8s cubic-bezier(0.16, 1, 0.3, 1)";
-    if (curtainLRef.current) curtainLRef.current.style.transition = style;
-    if (curtainRRef.current) curtainRRef.current.style.transition = style;
-  }, [entranceDone, curtainsOpen]);
-
-  const scene1 = clamp(1 - p / 0.22, 0, 1);
-  const scene2 = clamp((p - 0.68) / 0.16, 0, 1);
-  const portalOpacity = p < 0.55 ? 1 : clamp(1 - (p - 0.55) / 0.25, 0, 1);
-  const cloudsOpacity = lerp(0.55, 0.95, clamp(p / 0.08, 0, 1));
+  const runCheck = useCallback(async () => {
+    const u = query.trim().toLowerCase().replace(/[^a-z0-9._]/g, "");
+    if (!u) return;
+    setChecking(true);
+    setResult(null);
+    try {
+      const res = await fetch("/api/check?username=" + encodeURIComponent(u));
+      setResult(await res.json());
+    } catch {
+      setResult({ status: "unknown", confidence: 0, message: "Check failed." });
+    } finally {
+      setChecking(false);
+    }
+  }, [query]);
 
   return (
-    <div ref={containerRef} style={{ height: "480vh", position: "relative" }}>
-      <div
-        style={{
-          position: "sticky",
-          top: 0,
-          height: "100vh",
-          overflow: "hidden",
-          background: "#0a0608",
-        }}
-      >
-        {/* World */}
-        <div ref={worldRef} style={{ position: "absolute", inset: 0, transformOrigin: "50% 50%" }}>
-          <img
-            src={WORLD_BG}
-            alt=""
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background:
-                "linear-gradient(180deg, rgba(10,6,8,0.35) 0%, rgba(10,6,8,0.15) 40%, rgba(10,6,8,0.55) 100%)",
-            }}
-          />
-        </div>
-
-        {/* Soft cloud layer */}
-        <div
-          ref={cloudsRef}
-          style={{
-            position: "absolute",
-            bottom: "-5%",
-            left: "-5%",
-            right: "-5%",
-            height: "55%",
-            zIndex: 10,
-            opacity: cloudsOpacity,
-            transformOrigin: "50% 100%",
-            pointerEvents: "none",
-          }}
-        >
-          <img
-            src={CLOUDS_BG}
-            alt=""
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              objectPosition: "center bottom",
-              mixBlendMode: "screen",
-              opacity: 0.55,
-            }}
-          />
-        </div>
-
-        {/* Portal / mid scene */}
-        <div
-          ref={portalRef}
-          style={{
-            position: "absolute",
-            inset: 0,
-            zIndex: 15,
-            opacity: portalOpacity,
-            transformOrigin: "52% 38%",
-          }}
-        >
-          <img
-            src={PORTAL_BG}
-            alt=""
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background:
-                "radial-gradient(ellipse at 52% 38%, transparent 0%, rgba(10,6,8,0.45) 70%)",
-            }}
-          />
-        </div>
-
-        {/* Bottom vignette */}
-        <div
-          style={{
-            position: "absolute",
-            left: 0,
-            right: 0,
-            bottom: 0,
-            height: "42%",
-            background: "linear-gradient(to top, rgba(0,0,0,0.7), transparent)",
-            zIndex: 16,
-            pointerEvents: "none",
-          }}
-        />
-
-        {/* CSS velvet curtains (no external PNG) */}
-        <div
-          ref={curtainLRef}
-          style={{
-            position: "absolute",
-            top: 0,
-            bottom: 0,
-            left: 0,
-            width: "56%",
-            zIndex: 18,
-            transformOrigin: "left center",
-            background:
-              "linear-gradient(90deg, #1a0806 0%, #3a1510 35%, #5c1f18 55%, #2a0c08 85%, transparent 100%)",
-            boxShadow: "inset -40px 0 60px rgba(0,0,0,0.45)",
-            borderRight: "1px solid rgba(120,40,30,0.25)",
-          }}
-        />
-        <div
-          ref={curtainRRef}
-          style={{
-            position: "absolute",
-            top: 0,
-            bottom: 0,
-            right: 0,
-            width: "56%",
-            zIndex: 18,
-            transformOrigin: "right center",
-            background:
-              "linear-gradient(270deg, #1a0806 0%, #3a1510 35%, #5c1f18 55%, #2a0c08 85%, transparent 100%)",
-            boxShadow: "inset 40px 0 60px rgba(0,0,0,0.45)",
-            borderLeft: "1px solid rgba(120,40,30,0.25)",
-          }}
-        />
-
-        {/* Top fade */}
-        <div
-          style={{
-            position: "absolute",
-            left: 0,
-            right: 0,
-            top: 0,
-            height: "38vh",
-            background: "linear-gradient(to bottom, rgba(0,0,0,0.5), transparent)",
-            zIndex: 45,
-            pointerEvents: "none",
-          }}
-        />
-
-        {/* Nav */}
-        <nav
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            zIndex: 50,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: "18px 20px",
-          }}
-        >
-          <span
-            style={{
-              fontFamily: "Imprima, sans-serif",
-              fontSize: 11,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              opacity: 0.9,
-            }}
-          >
-            Scan
-          </span>
-          <span
-            style={{
-              fontFamily: "Viaoda Libre, serif",
-              fontSize: 18,
-              letterSpacing: "0.08em",
-            }}
-          >
-            HandleHunt
-          </span>
-          <a
-            href={TELEGRAM}
-            target="_blank"
-            rel="noreferrer"
-            style={{
-              fontFamily: "Imprima, sans-serif",
-              fontSize: 11,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              color: "#fff",
-              textDecoration: "none",
-              opacity: 0.9,
-            }}
-          >
-            Buy
-          </a>
-        </nav>
-
-        {/* Scene 1 */}
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            zIndex: 20,
-            opacity: scene1 * (uiVisible ? 1 : 0),
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            textAlign: "center",
-            padding: 24,
-            transition: "opacity 0.9s ease",
-            pointerEvents: scene1 > 0.05 ? "auto" : "none",
-          }}
-        >
-          <div
-            style={{
-              fontFamily: "Viaoda Libre, serif",
-              color: "#fff",
-              textShadow: "0 2px 28px rgba(0,0,0,0.85)",
-            }}
-          >
-            <div style={{ fontSize: "clamp(26px, 7vw, 42px)", letterSpacing: "0.12em" }}>
-              HUNT <span style={{ color: "rgba(255,220,180,0.75)" }}>›</span> <em>RARE</em>
-            </div>
-            <div
-              style={{
-                fontSize: "clamp(48px, 14vw, 86px)",
-                letterSpacing: "-0.02em",
-                lineHeight: 1,
-              }}
-            >
-              HANDLES
-            </div>
-          </div>
-          <p
-            style={{
-              fontFamily: "Imprima, sans-serif",
-              fontSize: 16,
-              lineHeight: 1.65,
-              color: "rgba(255,245,235,0.9)",
-              maxWidth: 320,
-              marginTop: 18,
-              textShadow: "0 1px 14px rgba(0,0,0,0.8)",
-            }}
-          >
-            Scan 3–5 character Instagram usernames. Find what is still free. Buy rare ones on the
-            marketplace.
+    <main ref={containerRef} className="h-screen overflow-y-auto overflow-x-hidden font-manrope bg-black relative">
+      <section className="relative h-screen w-full flex-shrink-0 overflow-hidden">
+        <video className="absolute inset-0 z-10 w-full h-full object-cover" src={HERO_VIDEO} autoPlay loop muted playsInline />
+        <div className="absolute inset-0 z-30 pointer-events-none bg-gradient-to-b from-black/40 via-transparent to-black/50" />
+        <div className="absolute top-[24px] left-[20px] md:top-[64px] md:left-[64px] z-40 flex flex-row gap-4 md:gap-6 items-center max-w-[calc(100vw-140px)]">
+          <Logo size={48} />
+          <p className="text-white text-[11px] md:text-[16px] leading-[1.2] font-semibold tracking-[0.02em] hidden md:block">
+            Rare handles.<br />Live scan.<br />Marketplace.
           </p>
-          <div
-            style={{
-              marginTop: 36,
-              fontSize: 10,
-              letterSpacing: "0.22em",
-              textTransform: "uppercase",
-              opacity: 0.65,
-            }}
-          >
-            DESCEND
+          <p className="text-white text-[11px] leading-[1.2] font-semibold block md:hidden w-[112px]">
+            Scan rare<br />IG handles.<br />Buy smart.
+          </p>
+        </div>
+        <div className="hidden md:flex absolute left-[64px] top-[200px] z-40 flex-col gap-6 max-w-[320px] text-white text-[14px] leading-relaxed">
+          <p>HandleHunt estimates Instagram username availability and surfaces rare short handles. Listings are third-party offers.</p>
+          <p>Meta prohibits buying or selling accounts and usernames in its Terms of Use.</p>
+        </div>
+        <a href="#scanner" className="absolute top-[24px] right-[20px] md:top-[64px] md:right-[64px] z-40 px-5 py-3 md:px-10 md:py-7 border border-white rounded-[100%] text-white text-[12px] md:text-[18px] font-italiana uppercase tracking-widest hover:bg-white/10 hover:backdrop-blur-[48px] transition-all duration-300 bg-black/10 backdrop-blur-sm">
+          Get started
+        </a>
+        <div className="absolute bottom-[32px] left-[20px] right-[20px] md:left-auto md:bottom-[64px] md:right-[64px] md:max-w-[1200px] text-left md:text-right z-40">
+          <div className="md:hidden flex flex-col gap-4 max-w-[280px] text-white text-[12px] mb-8">
+            <p>Find short Instagram usernames still free — or listed by sellers.</p>
+            <p>Not affiliated with Meta or Instagram.</p>
+          </div>
+          <h1 className="text-white text-[32px] leading-[1.1] md:text-[96px] font-italiana md:leading-[88px]">
+            <span className="md:hidden">Hunt Rare<br />Instagram<br />Handles.</span>
+            <span className="hidden md:inline">Rare Instagram<br />Handles.<br />Scan. Discover.<br />Claim.</span>
+          </h1>
+        </div>
+      </section>
+
+      <section className="relative min-h-screen w-full bg-[#FF0000] flex flex-col z-10">
+        <motion.div className="hidden md:block absolute top-0 left-0 w-full z-[100] pointer-events-none -translate-y-1/2" style={{ y: cloudYDesktop }}>
+          <div className="w-full h-[180px] opacity-90" style={{ background: "radial-gradient(ellipse 40% 80% at 20% 50%, rgba(255,255,255,0.95) 0%, transparent 70%), radial-gradient(ellipse 35% 70% at 50% 60%, rgba(255,255,255,0.9) 0%, transparent 70%), radial-gradient(ellipse 40% 80% at 80% 45%, rgba(255,255,255,0.95) 0%, transparent 70%)" }} />
+        </motion.div>
+        <motion.div className="md:hidden absolute top-0 left-0 w-full z-[100] pointer-events-none -translate-y-1/2" style={{ y: cloudYMobile }}>
+          <div className="w-full h-[100px] opacity-90" style={{ background: "radial-gradient(ellipse 50% 90% at 30% 50%, rgba(255,255,255,0.95) 0%, transparent 70%), radial-gradient(ellipse 50% 90% at 70% 55%, rgba(255,255,255,0.9) 0%, transparent 70%)" }} />
+        </motion.div>
+        <div className="flex-1 flex flex-col items-center w-full pt-[100px] md:pt-[220px]">
+          <div className="flex flex-col items-center w-full px-8 text-center z-20 relative max-w-[900px] mx-auto">
+            <Logo size={80} />
+            <p className="text-white text-[16px] max-w-[400px] leading-[1.6] mb-10 uppercase tracking-wider mx-auto mt-8">
+              Built to cut through handle noise — scan availability estimates and browse rare short names in one place.
+            </p>
+            <div className="font-marck text-white text-[96px] md:text-[120px] leading-none mb-8">H.H.</div>
+            <p className="text-white text-[16px] w-[400px] max-w-full font-light mb-6">Availability checks are estimates from public signals — not guarantees from Instagram.</p>
+            <p className="text-white text-[16px] w-[400px] max-w-full font-light mb-16">Marketplace deals happen via Telegram. HandleHunt does not process payments or transfer accounts.</p>
           </div>
         </div>
-
-        {/* Scene 2 */}
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            zIndex: 46,
-            opacity: scene2,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            paddingTop: "12vh",
-            textAlign: "center",
-            pointerEvents: scene2 > 0.2 ? "auto" : "none",
-          }}
-        >
-          <h2
-            style={{
-              fontFamily: "Viaoda Libre, serif",
-              fontSize: "clamp(28px, 8vw, 56px)",
-              color: "#fff",
-              textShadow: "0 2px 20px rgba(0,0,0,0.5)",
-              margin: 0,
-              maxWidth: "92%",
-            }}
-          >
-            CLAIM WHAT IS STILL FREE
-          </h2>
-          <p
-            style={{
-              fontFamily: "Imprima, sans-serif",
-              fontSize: 16,
-              lineHeight: 1.6,
-              maxWidth: 360,
-              color: "rgba(255,255,255,0.85)",
-              marginTop: 16,
-            }}
-          >
-            Short handles move fast. Scan live, save projects, buy from the marketplace.
-          </p>
-          <a
-            href={TELEGRAM}
-            target="_blank"
-            rel="noreferrer"
-            style={{
-              marginTop: 28,
-              padding: "14px 28px",
-              borderRadius: 999,
-              border: "1px solid rgba(255,255,255,0.35)",
-              background: "rgba(255,255,255,0.1)",
-              color: "#fff",
-              fontFamily: "Imprima, sans-serif",
-              fontSize: 13,
-              letterSpacing: "0.14em",
-              textTransform: "uppercase",
-              textDecoration: "none",
-            }}
-          >
-            Open Marketplace
-          </a>
+        <div className="relative w-full shrink-0">
+          <div className="absolute top-0 left-0 w-full h-[100px] bg-gradient-to-b from-[#FF0000] to-transparent z-10 pointer-events-none" />
+          <video className="w-full h-auto block object-contain" src={BOTTOM_VIDEO} autoPlay loop muted playsInline />
         </div>
-      </div>
-    </div>
+      </section>
+
+      <section id="scanner" className="relative w-full bg-black py-20 px-5 md:px-16 border-t border-white/10">
+        <div className="max-w-3xl mx-auto">
+          <p className="text-[11px] uppercase tracking-[0.2em] text-white/50 mb-3">Scanner</p>
+          <h2 className="font-italiana text-4xl md:text-5xl text-white mb-4">Check a handle</h2>
+          <p className="text-white/70 text-sm mb-8 max-w-xl">Enter a username for an availability estimate from public signals — not an official Instagram result.</p>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex-1 flex items-center gap-2 border border-white/25 rounded-full px-5 py-3 bg-white/5">
+              <span className="text-white/40">@</span>
+              <input value={query} onChange={(e) => setQuery(e.target.value)} onKeyDown={(e) => e.key === "Enter" && runCheck()} placeholder="username" className="flex-1 bg-transparent outline-none text-white placeholder:text-white/30" maxLength={30} />
+            </div>
+            <button type="button" onClick={runCheck} disabled={checking} className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full bg-white text-black font-semibold text-sm uppercase tracking-wider disabled:opacity-60">
+              {checking ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />} Scan
+            </button>
+          </div>
+          {result && (
+            <div className="mt-6 rounded-2xl border border-white/15 bg-white/5 p-5">
+              <p className="text-xs uppercase tracking-widest text-white/50 mb-1">Result</p>
+              <p className="text-xl font-italiana capitalize text-white">{result.status}</p>
+              <p className="text-sm text-white/70 mt-1">Confidence ~{result.confidence}% — {result.message}</p>
+            </div>
+          )}
+        </div>
+      </section>
+
+      <section id="marketplace" className="relative w-full bg-[#0a0a0a] py-20 border-t border-white/10">
+        <div className="px-5 md:px-16 mb-8">
+          <p className="text-[11px] uppercase tracking-[0.2em] text-white/50 mb-3">Marketplace</p>
+          <h2 className="font-italiana text-4xl md:text-5xl text-white mb-3">Listed handles</h2>
+          <p className="text-white/70 text-sm max-w-2xl">Swipe the carousel. Buy opens Telegram. Instagram forbids account/username sales in its Terms.</p>
+        </div>
+        <div className="market-track">
+          {LISTINGS.map((item) => (
+            <article key={item.handle} className="market-card rounded-3xl border border-white/15 bg-gradient-to-b from-white/10 to-white/[0.03] p-6 flex flex-col min-h-[240px]">
+              <div className="flex justify-between items-start mb-6">
+                <span className="font-italiana text-3xl text-white">@{item.handle}</span>
+                <span className={"text-[10px] uppercase tracking-wider px-2 py-1 rounded-full border " + (item.status === "available" ? "border-emerald-400/40 text-emerald-300" : "border-white/20 text-white/40")}>
+                  {item.status === "available" ? "Listed" : "Out of stock"}
+                </span>
+              </div>
+              <p className="text-white/50 text-sm flex-1">{item.note}</p>
+              <div className="flex items-center justify-between mt-6">
+                <span className="text-white text-lg font-semibold">{item.price}</span>
+                {item.status === "available" ? (
+                  <a href={TELEGRAM} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-sm uppercase tracking-wider px-4 py-2 rounded-full border border-white/30 hover:bg-white hover:text-black transition-colors">
+                    Buy now <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                ) : (
+                  <span className="text-sm text-white/35 uppercase tracking-wider">Out of stock</span>
+                )}
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <footer className="bg-black border-t border-white/10 px-5 md:px-16 py-12 text-sm text-white/60">
+        <div className="max-w-5xl mx-auto flex flex-col md:flex-row gap-8 justify-between">
+          <div>
+            <p className="font-italiana text-white text-2xl mb-2">HandleHunt</p>
+            <p className="max-w-sm">Discovery and listing venue only. Not affiliated with Meta or Instagram.</p>
+          </div>
+          <div className="flex flex-wrap gap-x-6 gap-y-2">
+            <a href="/privacy" className="hover:text-white">Privacy Policy</a>
+            <a href="/terms" className="hover:text-white">Terms of Use</a>
+            <a href="/disclaimer" className="hover:text-white">Disclaimer</a>
+            <a href={TELEGRAM} target="_blank" rel="noreferrer" className="hover:text-white">Telegram</a>
+          </div>
+        </div>
+        <p className="max-w-5xl mx-auto mt-8 text-xs text-white/40">
+          Buying or selling Instagram accounts/usernames may violate Instagram Terms of Use and can result in account loss.
+        </p>
+      </footer>
+    </main>
   );
 }
