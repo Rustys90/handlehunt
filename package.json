@@ -1,6 +1,6 @@
 {
   "name": "handlehunt",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "scripts": { "dev": "next dev", "build": "next build", "start": "next start" },
   "dependencies": {
@@ -8,7 +8,8 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "framer-motion": "^11.15.0",
-    "lucide-react": "^0.468.0"
+    "lucide-react": "^0.468.0",
+    "gsap": "^3.12.5"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
