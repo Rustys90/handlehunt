@@ -24,6 +24,7 @@ export function Marquee({
   ...props
 }: MarqueeProps) {
   const marqueeRef = useRef<HTMLDivElement>(null);
+
   return (
     <div
       {...props}
@@ -31,7 +32,7 @@ export function Marquee({
       data-slot="marquee"
       className={cn(
         "group flex overflow-hidden p-2 [--duration:40s] [--gap:1rem] [gap:var(--gap)]",
-        { "flex-row": !vertical, "flex-col": vertical },
+        vertical ? "flex-col" : "flex-row",
         className
       )}
       aria-label={ariaLabel}
@@ -43,9 +44,9 @@ export function Marquee({
           key={i}
           className={cn(
             "flex shrink-0 justify-around [gap:var(--gap)]",
-            !vertical ? "flex-row animate-marquee" : "flex-col animate-marquee-vertical",
-            pauseOnHover && "group-hover:[animation-play-state:paused]",
-            reverse && "[animation-direction:reverse]"
+            vertical ? "flex-col animate-marquee-vertical" : "flex-row animate-marquee",
+            pauseOnHover ? "group-hover:[animation-play-state:paused]" : undefined,
+            reverse ? "[animation-direction:reverse]" : undefined
           )}
         >
           {children}
