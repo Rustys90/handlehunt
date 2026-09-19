@@ -1,8 +1,10 @@
 "use client";
+
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Loader2, Search, Play, Pause } from "lucide-react";
 import ArcFlowCarousel, { type ArcCard } from "@/components/ui/arc-flow-carousel";
+import Testimonials3D from "@/components/ui/testimonials-3d";
 
 const HERO_VIDEO = "https://pub-86dc5b5484314368ac5436a674b0d919.r2.dev/cloudinarry%20to%20cloudflare/baby-track-video_crqby5.mp4";
 const BOTTOM_VIDEO = "https://pub-86dc5b5484314368ac5436a674b0d919.r2.dev/cloudinarry%20to%20cloudflare/track-video_2_haxdch.mp4";
@@ -26,6 +28,22 @@ const MARKET_CARDS: ArcCard[] = [
   { handle: "qora", price: "$1,050", status: "out", note: "Q-series short", color: "#ffd0d0" },
   { handle: "nyx7", price: "$420", status: "available", note: "Dark + digit", color: "#c9d8ff" },
   { handle: "vex", price: "$3,200", status: "out", note: "3-char power", color: "#f5e6c8" },
+  { handle: "aura", price: "$1,600", status: "available", note: "Soft luxury", color: "#f3cdd6" },
+  { handle: "byte", price: "$2,100", status: "available", note: "Tech dictionary", color: "#c3e3f4" },
+  { handle: "halo", price: "$1,280", status: "available", note: "Brand-ready", color: "#dcedc2" },
+  { handle: "iris", price: "$1,500", status: "out", note: "Name premium", color: "#f0e4c0" },
+  { handle: "jade", price: "$1,750", status: "available", note: "Gem short", color: "#dcd2f2" },
+  { handle: "kilo", price: "$680", status: "available", note: "Strong 4-char", color: "#ffd6e8" },
+  { handle: "lux", price: "$5,200", status: "out", note: "3-char luxury", color: "#c8f0d8" },
+  { handle: "nova", price: "$2,400", status: "available", note: "Space brand", color: "#d4e4ff" },
+  { handle: "onyx", price: "$1,900", status: "available", note: "Dark gem", color: "#ffe0c2" },
+  { handle: "pico", price: "$540", status: "available", note: "Cute tech", color: "#e0d4ff" },
+  { handle: "rune", price: "$1,120", status: "available", note: "Mystic short", color: "#d2f5e8" },
+  { handle: "sage", price: "$1,380", status: "out", note: "Calm brand", color: "#ffd0d0" },
+  { handle: "volt", price: "$990", status: "available", note: "Energy vibe", color: "#c9d8ff" },
+  { handle: "wisp", price: "$760", status: "available", note: "Light airy", color: "#f5e6c8" },
+  { handle: "yuki", price: "$1,050", status: "available", note: "Name soft", color: "#f3cdd6" },
+  { handle: "zest", price: "$610", status: "available", note: "Fresh brand", color: "#c3e3f4" },
 ];
 
 function indexToHandle(index: number, length: number): string {
@@ -43,7 +61,6 @@ export default function Home() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll({ container: containerRef });
   const cloudYDesktop = useTransform(scrollY, [0, 300], [0, -100]);
-  const cloudYMobile = useTransform(scrollY, [0, 300], [0, -24]);
   const [query, setQuery] = useState("");
   const [checking, setChecking] = useState(false);
   const [result, setResult] = useState<{ status: string; confidence: number; message: string } | null>(null);
@@ -115,7 +132,9 @@ export default function Home() {
   }, [scanning]);
 
   const total = totalCombos(scanLen);
-  const pct = total > 0 ? ((scanIndex / total) * 100).toFixed(4) : "0";
+  const pctNum = total > 0 ? (scanIndex / total) * 100 : 0;
+  const pct = pctNum.toFixed(4);
+  const barWidth = scanning ? Math.max(2.5, pctNum) : Math.max(0, pctNum);
 
   return (
     <main ref={containerRef} className="h-screen overflow-y-auto overflow-x-hidden font-manrope bg-black relative">
@@ -187,15 +206,29 @@ export default function Home() {
               {scanning ? "Pause" : "Start scan"}
             </button>
           </div>
-          <div className="rounded-2xl border border-white/15 bg-white/5 p-5 mb-6">
-            <p className="text-xs text-white/50 uppercase tracking-widest mb-2">Progress</p>
-            <p className="text-white font-mono text-sm">@{lastChecked || "—"} · {scanIndex.toLocaleString()} / {total.toLocaleString()} ({pct}%)</p>
-            <div className="mt-4 h-2.5 rounded-full bg-white/10 overflow-hidden relative">
-              <div className="h-full rounded-full progress-fill relative overflow-hidden" style={{ width: Math.min(100, Math.max(scanning ? 1.2 : 0.5, Number(pct))) + "%" }}>
-                <span className="progress-shine absolute inset-0" />
+
+          <div className="rounded-2xl border border-white/12 bg-gradient-to-b from-white/[0.07] to-white/[0.02] p-5 mb-6 shadow-[0_0_40px_rgba(255,0,0,0.06)]">
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-[10px] text-white/45 uppercase tracking-[0.22em] font-semibold">Progress</p>
+              {scanning && (
+                <span className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-red-400">
+                  <span className="size-1.5 rounded-full bg-red-500 animate-pulse" /> Live
+                </span>
+              )}
+            </div>
+            <p className="text-white font-mono text-sm mb-1">
+              <span className="text-white/90">@{lastChecked || "—"}</span>
+              <span className="text-white/35 mx-2">·</span>
+              <span className="text-white/70">{scanIndex.toLocaleString()} / {total.toLocaleString()}</span>
+            </p>
+            <p className="text-red-400/90 font-mono text-xs mb-4">{pct}%</p>
+            <div className={"progress-shell " + (scanning ? "progress-pulse" : "")}>
+              <div className="progress-fill" style={{ width: Math.min(100, barWidth) + "%" }}>
+                <span className="progress-shine" />
               </div>
             </div>
           </div>
+
           {found.length > 0 && (
             <div>
               <p className="text-xs uppercase tracking-widest text-white/50 mb-3">Possible available ({found.length})</p>
@@ -213,10 +246,12 @@ export default function Home() {
         <div className="px-5 md:px-16 mb-2">
           <p className="text-[11px] uppercase tracking-[0.2em] text-white/50 mb-3">Marketplace</p>
           <h2 className="font-italiana text-4xl md:text-5xl text-white mb-2">Listed handles</h2>
-          <p className="text-white/70 text-sm max-w-2xl">Arc carousel — drag or scroll. Buy opens Telegram.</p>
+          <p className="text-white/70 text-sm max-w-2xl">{MARKET_CARDS.length} handles · drag the arc · Buy opens Telegram</p>
         </div>
         <ArcFlowCarousel cards={MARKET_CARDS} />
       </section>
+
+      <Testimonials3D />
 
       <footer className="bg-black border-t border-white/10 px-5 md:px-16 py-12 text-sm text-white/60">
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row gap-8 justify-between">
