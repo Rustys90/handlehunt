@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Disclaimer",
   description:
-    "Important disclaimer: HandleHunt is independent of Meta/Instagram; availability results are estimates only.",
+    "Important disclaimer: HandleForge is independent of Meta/Instagram; availability results are estimates only.",
 };
 
 export default function DisclaimerPage() {
@@ -22,13 +22,13 @@ export default function DisclaimerPage() {
       <div className="space-y-6 text-white/80 text-[15px] leading-relaxed">
         <h2 className="text-white text-xl font-semibold">No affiliation</h2>
         <p>
-          HandleHunt is an independent project. It is not affiliated with, endorsed by, sponsored by, or associated with
+          HandleForge is an independent project. It is not affiliated with, endorsed by, sponsored by, or associated with
           Meta Platforms, Inc., Instagram, or any of their subsidiaries. Instagram is a trademark of Meta Platforms, Inc.
         </p>
 
         <h2 className="text-white text-xl font-semibold pt-2">Availability estimates</h2>
         <p>
-          Any "available", "taken", or confidence score shown by HandleHunt is an automated estimate based on publicly
+          Any "available", "taken", or confidence score shown by HandleForge is an automated estimate based on publicly
           observable signals. It is not confirmation from Instagram that a username can be registered, transferred, or kept.
           Names can be reserved, restricted, shadow-blocked, or taken between the time of a check and any action you take.
         </p>
@@ -40,7 +40,7 @@ export default function DisclaimerPage() {
 
         <h2 className="text-white text-xl font-semibold pt-2">Third-party deals</h2>
         <p>
-          Marketplace listings and Telegram conversations are third-party. HandleHunt does not guarantee authenticity of
+          Marketplace listings and Telegram conversations are third-party. HandleForge does not guarantee authenticity of
           sellers, ownership of handles, successful transfer, or refunds. Conduct due diligence and use escrow or other
           protections when appropriate.
         </p>
@@ -52,7 +52,7 @@ export default function DisclaimerPage() {
 
         <h2 className="text-white text-xl font-semibold pt-2">Limitation</h2>
         <p>
-          Use of HandleHunt is at your own risk. See our Terms of Use for additional limitations of liability.
+          Use of HandleForge is at your own risk. See our Terms of Use for additional limitations of liability.
         </p>
 
         <p className="pt-4">
