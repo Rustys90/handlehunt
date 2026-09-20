@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { Loader2, Search, Play, Pause } from "lucide-react";
 import ArcFlowCarousel, { type ArcCard } from "@/components/ui/arc-flow-carousel";
 import Testimonials3D from "@/components/ui/testimonials-3d";
+import { ProgressiveFluxLoader } from "@/components/ui/progressive-flux-loader";
 
 const HERO_VIDEO = "https://pub-86dc5b5484314368ac5436a674b0d919.r2.dev/cloudinarry%20to%20cloudflare/baby-track-video_crqby5.mp4";
 const BOTTOM_VIDEO = "https://pub-86dc5b5484314368ac5436a674b0d919.r2.dev/cloudinarry%20to%20cloudflare/track-video_2_haxdch.mp4";
@@ -207,26 +208,43 @@ export default function Home() {
             </button>
           </div>
 
+          {/* Progressive flux progress */}
           <div className="rounded-2xl border border-white/12 bg-gradient-to-b from-white/[0.07] to-white/[0.02] p-5 mb-6 shadow-[0_0_40px_rgba(255,0,0,0.06)]">
-            <div className="flex items-center justify-between mb-3">
-              <p className="text-[10px] text-white/45 uppercase tracking-[0.22em] font-semibold">Progress</p>
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-[10px] text-white/45 uppercase tracking-[0.22em] font-semibold">
+                Progress
+              </p>
               {scanning && (
                 <span className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-red-400">
-                  <span className="size-1.5 rounded-full bg-red-500 animate-pulse" /> Live
+                  <span className="size-1.5 rounded-full bg-red-500 animate-pulse" />
+                  Live
                 </span>
               )}
             </div>
-            <p className="text-white font-mono text-sm mb-1">
+            <p className="text-white font-mono text-sm mb-4 text-center">
               <span className="text-white/90">@{lastChecked || "—"}</span>
               <span className="text-white/35 mx-2">·</span>
-              <span className="text-white/70">{scanIndex.toLocaleString()} / {total.toLocaleString()}</span>
+              <span className="text-white/70">
+                {scanIndex.toLocaleString()} / {total.toLocaleString()}
+              </span>
+              <span className="text-white/35 mx-2">·</span>
+              <span className="text-red-400/90">{pct}%</span>
             </p>
-            <p className="text-red-400/90 font-mono text-xs mb-4">{pct}%</p>
-            <div className={"progress-shell " + (scanning ? "progress-pulse" : "")}>
-              <div className="progress-fill" style={{ width: Math.min(100, barWidth) + "%" }}>
-                <span className="progress-shine" />
-              </div>
-            </div>
+            <ProgressiveFluxLoader
+              value={barWidth}
+              showLabel
+              loop={false}
+              className="max-w-none"
+              textClassName="text-white/75 text-xl sm:text-2xl"
+              phases={[
+                { at: 0, label: "warming up" },
+                { at: 5, label: "scanning handles" },
+                { at: 25, label: "checking availability" },
+                { at: 55, label: "hunting rares" },
+                { at: 80, label: "deep scan" },
+                { at: 100, label: "scan complete" },
+              ]}
+            />
           </div>
 
           {found.length > 0 && (
