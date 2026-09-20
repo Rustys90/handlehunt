@@ -16,7 +16,7 @@ const TESTIMONIALS: TItem[] = [
   {
     name: "Ava Green",
     username: "@ava.g",
-    body: "Found my dream 4-letter handle in under an hour. HandleHunt is unreal.",
+    body: "Found my dream 4-letter handle in under an hour. HandleForge is unreal.",
     initials: "AG",
     color: "#f3cdd6",
     country: "\ud83c\udde6\ud83c\uddfa Australia",
@@ -72,7 +72,7 @@ const TESTIMONIALS: TItem[] = [
   {
     name: "Lucas Stone",
     username: "@luc.s",
-    body: "HandleHunt found what namecheckers missed. Straight fire.",
+    body: "HandleForge found what namecheckers missed. Straight fire.",
     initials: "LS",
     color: "#d4e4ff",
     country: "\ud83c\uddeb\ud83c\uddf7 France",
@@ -165,7 +165,7 @@ export default function Testimonials3D() {
         <p className="text-[11px] uppercase tracking-[0.2em] text-white/50 mb-3">Social proof</p>
         <h2 className="font-italiana text-4xl md:text-5xl text-white mb-2">What hunters say</h2>
         <p className="text-white/60 text-sm max-w-xl">
-          Creators who scanned, claimed, and bought rare Instagram handles through HandleHunt.
+          Creators who scanned, claimed, and bought rare Instagram handles through HandleForge.
         </p>
       </div>
 
