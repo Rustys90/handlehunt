@@ -1,0 +1,25 @@
+# HandleHunt
+
+> Find and browse rare short Instagram usernames. Session-based exhaustive 3/4-character scanners, availability estimates, and a Telegram marketplace for listed handles.
+
+HandleHunt is an independent discovery tool. It is not affiliated with, endorsed by, or partnered with Meta Platforms, Inc. or Instagram.
+
+## Primary pages
+
+- [Home](https://handlehunt-xi-tau.vercel.app/): Hero, single-handle check, exhaustive scanner, marketplace carousel, testimonials
+- [Scanner](https://handlehunt-xi-tau.vercel.app/#scanner): Exhaustive a-z0-9 combinations for 3 and 4 character handles
+- [Marketplace](https://handlehunt-xi-tau.vercel.app/#marketplace): Listed handles with Buy (Telegram) and Out of stock states
+- [Privacy Policy](https://handlehunt-xi-tau.vercel.app/privacy)
+- [Terms of Use](https://handlehunt-xi-tau.vercel.app/terms)
+- [Disclaimer](https://handlehunt-xi-tau.vercel.app/disclaimer)
+
+## Product facts
+
+- Scanner runs only while the browser tab is open; progress can be saved in local browser storage
+- Availability results are estimates from public profile signals, not official Instagram registration status
+- Purchases and transfers happen off-site via Telegram (https://t.me/rareinsta)
+- No on-site payment processing
+
+## Contact
+
+Telegram: https://t.me/rareinsta
