@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
-    "How HandleHunt collects, uses, and shares information when you scan handles or browse the marketplace.",
+    "How HandleForge collects, uses, and shares information when you scan handles or browse the marketplace.",
 };
 
 export default function PrivacyPage() {
@@ -21,7 +21,7 @@ export default function PrivacyPage() {
       <p className="text-white/50 text-sm mb-10">Last updated: September 20, 2026</p>
       <div className="space-y-6 text-white/80 text-[15px] leading-relaxed">
         <p>
-          HandleHunt ("we", "us") operates a website that provides Instagram username availability
+          HandleForge ("we", "us") operates a website that provides Instagram username availability
           <strong className="text-white/90"> estimates</strong> and third-party marketplace listings.
           We are independent and not affiliated with Meta Platforms, Inc. or Instagram.
         </p>
@@ -71,7 +71,7 @@ export default function PrivacyPage() {
         </p>
 
         <h2 className="text-white text-xl font-semibold pt-2">7. Children</h2>
-        <p>HandleHunt is not directed at children under 13. We do not knowingly collect their data.</p>
+        <p>HandleForge is not directed at children under 13. We do not knowingly collect their data.</p>
 
         <h2 className="text-white text-xl font-semibold pt-2">8. Your choices</h2>
         <p>
