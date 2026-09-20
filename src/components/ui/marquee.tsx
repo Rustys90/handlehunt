@@ -1,6 +1,6 @@
 "use client";
 
-import React, { ComponentPropsWithoutRef, useRef } from "react";
+import React, { ComponentPropsWithoutRef } from "react";
 import { cn } from "@/lib/utils";
 
 interface MarqueeProps extends ComponentPropsWithoutRef<"div"> {
@@ -19,35 +19,35 @@ export function Marquee({
   pauseOnHover = false,
   children,
   vertical = false,
-  repeat = 4,
+  repeat = 2,
   ariaLabel,
   ...props
 }: MarqueeProps) {
-  const marqueeRef = useRef<HTMLDivElement>(null);
+  const count = Math.max(2, repeat);
 
   return (
     <div
       {...props}
-      ref={marqueeRef}
       data-slot="marquee"
       className={cn(
-        "group flex overflow-hidden p-2 [--duration:40s] [--gap:1rem] [gap:var(--gap)]",
+        "group flex overflow-hidden p-2 [--duration:32s] [--gap:0.75rem] [gap:var(--gap)]",
         vertical ? "flex-col" : "flex-row",
         className
       )}
       aria-label={ariaLabel}
-      role="marquee"
-      tabIndex={0}
+      role="presentation"
     >
-      {Array.from({ length: repeat }, (_, i) => (
+      {Array.from({ length: count }, (_, i) => (
         <div
           key={i}
+          aria-hidden={i > 0}
           className={cn(
-            "flex shrink-0 justify-around [gap:var(--gap)]",
+            "flex shrink-0 justify-around [gap:var(--gap)] will-change-transform",
             vertical ? "flex-col animate-marquee-vertical" : "flex-row animate-marquee",
             pauseOnHover ? "group-hover:[animation-play-state:paused]" : undefined,
             reverse ? "[animation-direction:reverse]" : undefined
           )}
+          style={{ transform: "translateZ(0)", backfaceVisibility: "hidden" }}
         >
           {children}
         </div>
