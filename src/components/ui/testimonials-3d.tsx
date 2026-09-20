@@ -21,7 +21,7 @@ const TESTIMONIALS: TItem[] = [
   { name: "Emma Lee", username: "@emma.l", body: "UI is clean, deals were smooth. Would recommend to any creator.", initials: "EL", color: "#ffd6e8", tag: "CA" },
   { name: "Carlos Ray", username: "@carl.r", body: "Got my fav short handle listed here. Trusted sellers, fast chat.", initials: "CR", color: "#c8f0d8", tag: "ES" },
   { name: "Lucas Stone", username: "@luc.s", body: "HandleHunt found what namecheckers missed. Straight fire.", initials: "LS", color: "#d4e4ff", tag: "FR" },
-  { name: "Ana Miller", username: "@ana.m", body: "100% trusted workflow — scan, list, buy on Telegram. Simple.", initials: "AM", color: "#ffe0c2", tag: "DE" },
+  { name: "Ana Miller", username: "@ana.m", body: "100% trusted workflow \u2014 scan, list, buy on Telegram. Simple.", initials: "AM", color: "#ffe0c2", tag: "DE" },
 ];
 
 function rotate(list: TItem[], offset: number) {
@@ -98,8 +98,12 @@ export default function Testimonials3D() {
         </p>
       </div>
 
+      {/* 3D tilt on all devices \u2014 lighter on mobile via CSS */}
       <div className="relative mx-auto h-[360px] w-full max-w-5xl overflow-hidden">
-        <div className="flex h-full flex-row items-stretch justify-center gap-3 px-2 md:gap-4 testimonial-stage">
+        <div
+          className="flex h-full flex-row items-stretch justify-center gap-3 px-2 md:gap-4 testimonial-stage"
+          style={{ willChange: "transform", transform: "translateZ(0)" }}
+        >
           <Column items={col0} duration="28s" className="h-full" />
           <Column items={col1} reverse duration="34s" className="h-full" />
           <Column items={col2} duration="30s" className="h-full hidden sm:flex" />
