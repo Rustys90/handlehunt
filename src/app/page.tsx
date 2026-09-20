@@ -58,6 +58,31 @@ function Logo({ size = 48 }: { size?: number }) {
 }
 type Found = { handle: string; confidence: number; at: number };
 
+
+function logSignal(entry: {
+  username: string;
+  status: string;
+  confidence: number;
+  method?: string;
+  signals?: string[];
+  sessionId?: string;
+}) {
+  try {
+    const key = "hh_signals_v1";
+    const prev = JSON.parse(localStorage.getItem(key) || "[]") as unknown[];
+    const next = [{ ...entry, at: new Date().toISOString() }, ...prev].slice(0, 500);
+    localStorage.setItem(key, JSON.stringify(next));
+  } catch {}
+  try {
+    void fetch("/api/log", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...entry, source: "scanner" }),
+      keepalive: true,
+    });
+  } catch {}
+}
+
 export default function Home() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll({ container: containerRef });
@@ -97,7 +122,11 @@ export default function Home() {
     setChecking(true); setResult(null);
     try {
       const res = await fetch("/api/check?username=" + encodeURIComponent(u));
-      setResult(await res.json());
+      const data = await res.json();
+      setResult(data);
+      if (data.status === "possibly_available" || data.status === "held" || data.status === "rate_limited") {
+        logSignal({ username: u, status: data.status, confidence: data.confidence, method: data.method, signals: data.signals });
+      }
     } catch { setResult({ status: "unknown", confidence: 0, message: "Check failed." }); }
     finally { setChecking(false); }
   }, [query]);
@@ -111,20 +140,54 @@ export default function Home() {
       const total = totalCombos(lenRef.current);
       let idx = indexRef.current;
       let localFound = [...found];
+      let delayMs = 550;
+      let consecutiveRl = 0;
       while (scanningRef.current && !cancelled && idx < total) {
         const handle = indexToHandle(idx, lenRef.current);
         setLastChecked(handle); setScanIndex(idx);
         try {
           const res = await fetch("/api/check?username=" + encodeURIComponent(handle));
           const data = await res.json();
-          if (data.status === "available" && (data.confidence || 0) >= 40) {
-            localFound = [{ handle, confidence: data.confidence, at: Date.now() }, ...localFound].slice(0, 100);
-            setFound(localFound);
+          if (data.status === "rate_limited") {
+            consecutiveRl += 1;
+            const backoff = Math.min(90000, 8000 * Math.pow(1.6, Math.min(consecutiveRl, 6)));
+            delayMs = Math.min(4000, delayMs + 250);
+            logSignal({ username: handle, status: "rate_limited", confidence: data.confidence || 0, method: data.method, signals: data.signals });
+            await delay(backoff);
+            continue;
           }
-        } catch {}
+          consecutiveRl = 0;
+          if (delayMs > 550) delayMs = Math.max(550, delayMs - 40);
+          if (data.status === "possibly_available" && (data.confidence || 0) >= 45) {
+            localFound = [{ handle, confidence: data.confidence, at: Date.now(), method: data.method }, ...localFound].slice(0, 100);
+            setFound(localFound);
+            logSignal({ username: handle, status: data.status, confidence: data.confidence, method: data.method, signals: data.signals });
+          } else if (data.status === "held") {
+            logSignal({ username: handle, status: "held", confidence: data.confidence || 0, method: data.method, signals: data.signals });
+          }
+        } catch {
+          await delay(1200);
+        }
         idx += 1; indexRef.current = idx;
-        if (idx % 5 === 0) persist(idx, localFound);
-        await delay(450);
+        if (idx % 5 === 0) {
+          persist(idx, localFound);
+          try {
+            void fetch("/api/scan-session", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                sessionId: (typeof sessionStorage !== "undefined" && sessionStorage.getItem("hh_session_id")) || "anon",
+                length: lenRef.current,
+                index: idx,
+                found: localFound.slice(0, 50),
+                delayMs,
+                status: "running",
+              }),
+              keepalive: true,
+            });
+          } catch {}
+        }
+        await delay(delayMs);
       }
       persist(indexRef.current, localFound);
       if (idx >= total) setScanning(false);
