@@ -162,10 +162,10 @@ export default function Testimonials3D() {
   return (
     <section className="relative w-full border-t border-white/10 bg-black py-14 overflow-hidden">
       <div className="px-5 md:px-16 mb-8">
-        <p className="text-[11px] uppercase tracking-[0.2em] text-white/50 mb-3">Social proof</p>
-        <h2 className="font-italiana text-4xl md:text-5xl text-white mb-2">What hunters say</h2>
+        <p className="text-[11px] uppercase tracking-[0.2em] text-white/50 mb-3">Voices</p>
+        <h2 className="font-italiana text-4xl md:text-5xl text-white mb-2">Names outlast the moment</h2>
         <p className="text-white/60 text-sm max-w-xl">
-          Creators who scanned, claimed, and bought rare Instagram handles through HandleForge.
+          A short handle is a long bet — claimed once, carried everywhere.
         </p>
       </div>
 
