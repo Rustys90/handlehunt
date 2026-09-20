@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
-const SITE = "https://handlehunt-xi-tau.vercel.app";
+const SITE = "https://handleforge-xi-tau.vercel.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),
   title: {
-    default: "HandleHunt \u2014 Find Rare Instagram Usernames",
-    template: "%s \u2014 HandleHunt",
+    default: "HandleForge \u2014 Find Rare Instagram Usernames",
+    template: "%s \u2014 HandleForge",
   },
   description:
     "Scan short Instagram handles (3\u20134 characters), estimate availability, and browse rare usernames in the marketplace. Independent tool \u2014 not affiliated with Meta or Instagram.",
@@ -18,10 +18,10 @@ export const metadata: Metadata = {
     "4 letter Instagram username",
     "username availability",
     "Instagram handle marketplace",
-    "HandleHunt",
+    "HandleForge",
   ],
-  authors: [{ name: "HandleHunt" }],
-  creator: "HandleHunt",
+  authors: [{ name: "HandleForge" }],
+  creator: "HandleForge",
   robots: {
     index: true,
     follow: true,
@@ -31,14 +31,14 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: SITE,
-    siteName: "HandleHunt",
-    title: "HandleHunt \u2014 Find Rare Instagram Usernames",
+    siteName: "HandleForge",
+    title: "HandleForge \u2014 Find Rare Instagram Usernames",
     description:
       "Exhaustive short-handle scanner and Telegram marketplace for rare Instagram usernames. Not affiliated with Meta.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "HandleHunt \u2014 Rare Instagram Usernames",
+    title: "HandleForge \u2014 Rare Instagram Usernames",
     description: "Scan 3/4-character handles and browse listed rares. Independent of Meta/Instagram.",
   },
   alternates: { canonical: SITE },
@@ -52,7 +52,7 @@ const jsonLd = {
       "@type": "WebSite",
       "@id": `${SITE}/#website`,
       url: SITE,
-      name: "HandleHunt",
+      name: "HandleForge",
       description:
         "Find rare short Instagram usernames with exhaustive scanners and a Telegram marketplace.",
       publisher: { "@id": `${SITE}/#organization` },
@@ -65,14 +65,14 @@ const jsonLd = {
     {
       "@type": "Organization",
       "@id": `${SITE}/#organization`,
-      name: "HandleHunt",
+      name: "HandleForge",
       url: SITE,
       sameAs: ["https://t.me/rareinsta"],
       description: "Independent Instagram username discovery and marketplace venue.",
     },
     {
       "@type": "WebApplication",
-      name: "HandleHunt Scanner",
+      name: "HandleForge Scanner",
       url: `${SITE}/#scanner`,
       applicationCategory: "UtilityApplication",
       operatingSystem: "Web",
