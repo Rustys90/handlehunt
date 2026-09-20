@@ -1,86 +1,31 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
-const SITE = "https://handleforge-xi-tau.vercel.app";
-
 export const metadata: Metadata = {
-  metadataBase: new URL(SITE),
-  title: {
-    default: "HandleForge \u2014 Find Rare Instagram Usernames",
-    template: "%s \u2014 HandleForge",
-  },
+  title: "HandleForge — Find Rare Instagram Usernames",
   description:
-    "Scan short Instagram handles (3\u20134 characters), estimate availability, and browse rare usernames in the marketplace. Independent tool \u2014 not affiliated with Meta or Instagram.",
+    "Scan short Instagram handles, check availability, and browse rare usernames on the HandleForge marketplace. Availability estimates only — not affiliated with Meta or Instagram.",
   keywords: [
-    "Instagram username",
-    "rare Instagram handles",
-    "3 letter Instagram username",
-    "4 letter Instagram username",
-    "username availability",
-    "Instagram handle marketplace",
     "HandleForge",
+    "instagram username",
+    "rare handles",
+    "username availability",
+    "short instagram names",
+    "handle marketplace",
   ],
-  authors: [{ name: "HandleForge" }],
-  creator: "HandleForge",
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
-  },
   openGraph: {
-    type: "website",
-    locale: "en_US",
-    url: SITE,
-    siteName: "HandleForge",
-    title: "HandleForge \u2014 Find Rare Instagram Usernames",
+    title: "HandleForge — Rare Instagram Usernames",
     description:
-      "Exhaustive short-handle scanner and Telegram marketplace for rare Instagram usernames. Not affiliated with Meta.",
+      "Forge rare short Instagram handles. Live scan, availability estimates, marketplace via Telegram.",
+    type: "website",
+    siteName: "HandleForge",
   },
   twitter: {
     card: "summary_large_image",
-    title: "HandleForge \u2014 Rare Instagram Usernames",
-    description: "Scan 3/4-character handles and browse listed rares. Independent of Meta/Instagram.",
+    title: "HandleForge — Rare Instagram Usernames",
+    description: "Forge rare short Instagram handles. Live scan and marketplace.",
   },
-  alternates: { canonical: SITE },
-  category: "technology",
-};
-
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "WebSite",
-      "@id": `${SITE}/#website`,
-      url: SITE,
-      name: "HandleForge",
-      description:
-        "Find rare short Instagram usernames with exhaustive scanners and a Telegram marketplace.",
-      publisher: { "@id": `${SITE}/#organization` },
-      potentialAction: {
-        "@type": "SearchAction",
-        target: `${SITE}/?q={search_term_string}`,
-        "query-input": "required name=search_term_string",
-      },
-    },
-    {
-      "@type": "Organization",
-      "@id": `${SITE}/#organization`,
-      name: "HandleForge",
-      url: SITE,
-      sameAs: ["https://t.me/rareinsta"],
-      description: "Independent Instagram username discovery and marketplace venue.",
-    },
-    {
-      "@type": "WebApplication",
-      name: "HandleForge Scanner",
-      url: `${SITE}/#scanner`,
-      applicationCategory: "UtilityApplication",
-      operatingSystem: "Web",
-      offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-      description:
-        "Session-based exhaustive scanner for 3 and 4 character Instagram usernames (a-z, 0-9).",
-    },
-  ],
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -95,7 +40,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebApplication",
+              name: "HandleForge",
+              description:
+                "Scan short Instagram handles, estimate availability, and browse rare usernames on the marketplace.",
+              applicationCategory: "BusinessApplication",
+              offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+            }),
+          }}
         />
       </head>
       <body className="antialiased">{children}</body>
