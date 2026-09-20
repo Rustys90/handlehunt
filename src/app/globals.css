@@ -75,8 +75,23 @@ body {
 }
 
 @media (min-width: 768px) {
+  /* 3D tilt on all devices — lighter angles on small screens for GPU cost */
+.testimonial-stage {
+  transform: perspective(700px) rotateX(6deg) rotateY(-3deg);
+  transform-style: preserve-3d;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+@media (min-width: 768px) {
   .testimonial-stage {
-    transform: perspective(900px) rotateX(8deg) rotateY(-4deg);
-    transform-style: preserve-3d;
+    transform: perspective(900px) rotateX(10deg) rotateY(-5deg);
   }
+}
+/* Contain paint for marquee tracks */
+.testimonial-stage [data-slot="marquee"] {
+  contain: layout style paint;
+  isolation: isolate;
+}
+
 }
