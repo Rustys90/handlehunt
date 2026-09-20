@@ -212,8 +212,8 @@ export default function Home() {
         <a href="#scanner" className="absolute top-[24px] right-[20px] md:top-[64px] md:right-[64px] z-40 px-5 py-3 md:px-10 md:py-7 border border-white rounded-[100%] text-white text-[12px] md:text-[18px] font-italiana uppercase tracking-widest hover:bg-white/10 transition-all duration-300">Get started</a>
         <div className="absolute bottom-[32px] left-[20px] right-[20px] md:left-auto md:bottom-[64px] md:right-[64px] md:max-w-[1200px] text-left md:text-right z-40">
           <h1 className="text-white text-[32px] leading-[1.1] md:text-[96px] font-italiana md:leading-[88px]">
-            <span className="md:hidden">Hunt Rare<br />Instagram<br />Handles.</span>
-            <span className="hidden md:inline">Rare Instagram<br />Handles.<br />Scan. Discover.<br />Claim.</span>
+            <span className="md:hidden">Forge Rare<br />Instagram<br />Handles.</span>
+            <span className="hidden md:inline">Rare Instagram<br />Handles.<br />Scan. Forge.<br />Claim.</span>
           </h1>
         </div>
       </section>
