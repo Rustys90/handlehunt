@@ -226,7 +226,7 @@ export default function Home() {
           <div className="flex flex-col items-center w-full px-8 text-center z-20 relative max-w-[900px] mx-auto">
             <Logo size={80} />
             <p className="text-white text-[16px] max-w-[400px] leading-[1.6] mb-10 uppercase tracking-wider mx-auto mt-8">3 & 4 character exhaustive scans · arc marketplace · Telegram</p>
-            <div className="font-marck text-white text-[96px] md:text-[120px] leading-none mb-8">H.H.</div>
+            <div className="font-marck text-white text-[96px] md:text-[120px] leading-none mb-8">H.F.</div>
             <p className="text-white text-[16px] max-w-[400px] font-light mb-16">Scans pause when you leave. Progress is saved in this browser.</p>
           </div>
         </div>
