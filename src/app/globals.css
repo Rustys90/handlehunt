@@ -68,32 +68,31 @@ body {
   to { transform: translate3d(0, calc(-100% - var(--gap)), 0); }
 }
 .animate-marquee {
-  animation: marquee var(--duration, 32s) linear infinite;
+  animation: marquee var(--duration, 40s) linear infinite;
 }
 .animate-marquee-vertical {
-  animation: marquee-vertical var(--duration, 32s) linear infinite;
+  animation: marquee-vertical var(--duration, 40s) linear infinite;
 }
 
-/* 3D testimonial stage — visible on ALL devices */
+/* Original-style 3D stage (demo look), GPU-friendly */
 .testimonial-wrap {
-  perspective: 800px;
-  perspective-origin: 50% 40%;
+  perspective: 300px;
+  perspective-origin: center center;
 }
 .testimonial-stage {
-  transform: rotateX(14deg) rotateY(-8deg) rotateZ(1deg);
+  transform: translateX(-40px) translateZ(-80px) rotateX(20deg) rotateY(-10deg) rotateZ(12deg);
   transform-style: preserve-3d;
   will-change: transform;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
-@media (min-width: 768px) {
-  .testimonial-wrap {
-    perspective: 1100px;
-  }
+@media (min-width: 640px) {
   .testimonial-stage {
-    transform: rotateX(18deg) rotateY(-10deg) rotateZ(1.5deg);
+    transform: translateX(-70px) translateZ(-100px) rotateX(20deg) rotateY(-10deg) rotateZ(16deg);
   }
 }
-.testimonial-stage [data-slot="marquee"] {
-  transform: translateZ(0);
+@media (min-width: 768px) {
+  .testimonial-stage {
+    transform: translateX(-100px) translateZ(-100px) rotateX(20deg) rotateY(-10deg) rotateZ(20deg);
+  }
 }
