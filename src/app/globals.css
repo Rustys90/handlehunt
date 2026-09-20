@@ -74,24 +74,26 @@ body {
   animation: marquee-vertical var(--duration, 32s) linear infinite;
 }
 
-@media (min-width: 768px) {
-  /* 3D tilt on all devices — lighter angles on small screens for GPU cost */
+/* 3D testimonial stage — visible on ALL devices */
+.testimonial-wrap {
+  perspective: 800px;
+  perspective-origin: 50% 40%;
+}
 .testimonial-stage {
-  transform: perspective(700px) rotateX(6deg) rotateY(-3deg);
+  transform: rotateX(14deg) rotateY(-8deg) rotateZ(1deg);
   transform-style: preserve-3d;
   will-change: transform;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
 @media (min-width: 768px) {
+  .testimonial-wrap {
+    perspective: 1100px;
+  }
   .testimonial-stage {
-    transform: perspective(900px) rotateX(10deg) rotateY(-5deg);
+    transform: rotateX(18deg) rotateY(-10deg) rotateZ(1.5deg);
   }
 }
-/* Contain paint for marquee tracks */
 .testimonial-stage [data-slot="marquee"] {
-  contain: layout style paint;
-  isolation: isolate;
-}
-
+  transform: translateZ(0);
 }
