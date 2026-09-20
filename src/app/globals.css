@@ -60,12 +60,23 @@ body {
 }
 
 @keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(calc(-100% - var(--gap))); }
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(calc(-100% - var(--gap)), 0, 0); }
 }
 @keyframes marquee-vertical {
-  from { transform: translateY(0); }
-  to { transform: translateY(calc(-100% - var(--gap))); }
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(0, calc(-100% - var(--gap)), 0); }
 }
-.animate-marquee { animation: marquee var(--duration, 40s) infinite linear; }
-.animate-marquee-vertical { animation: marquee-vertical var(--duration, 40s) linear infinite; }
+.animate-marquee {
+  animation: marquee var(--duration, 32s) linear infinite;
+}
+.animate-marquee-vertical {
+  animation: marquee-vertical var(--duration, 32s) linear infinite;
+}
+
+@media (min-width: 768px) {
+  .testimonial-stage {
+    transform: perspective(900px) rotateX(8deg) rotateY(-4deg);
+    transform-style: preserve-3d;
+  }
+}
