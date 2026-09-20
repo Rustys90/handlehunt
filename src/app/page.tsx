@@ -272,18 +272,34 @@ export default function Home() {
       <Testimonials3D />
 
       <footer className="bg-black border-t border-white/10 px-5 md:px-16 py-12 text-sm text-white/60">
-        <div className="max-w-5xl mx-auto flex flex-col md:flex-row gap-8 justify-between">
+        <div className="max-w-5xl mx-auto grid gap-10 md:grid-cols-3">
           <div>
             <p className="font-italiana text-white text-2xl mb-2">HandleHunt</p>
-            <p className="max-w-sm">Discovery venue only. Not affiliated with Meta or Instagram.</p>
+            <p className="max-w-sm leading-relaxed">
+              Discovery venue for rare short Instagram usernames. Estimates only.
+              Not affiliated with Meta or Instagram.
+            </p>
           </div>
-          <div className="flex flex-wrap gap-x-6 gap-y-2">
-            <a href="/privacy" className="hover:text-white">Privacy Policy</a>
-            <a href="/terms" className="hover:text-white">Terms of Use</a>
-            <a href="/disclaimer" className="hover:text-white">Disclaimer</a>
-            <a href={TELEGRAM} target="_blank" rel="noreferrer" className="hover:text-white">Telegram</a>
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.2em] text-white/40 mb-3">Explore</p>
+            <div className="flex flex-col gap-2">
+              <a href="/#scanner" className="hover:text-white transition-colors">Scanner</a>
+              <a href="/#marketplace" className="hover:text-white transition-colors">Marketplace</a>
+              <a href={TELEGRAM} target="_blank" rel="noreferrer" className="hover:text-white transition-colors">Telegram deals</a>
+            </div>
+          </div>
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.2em] text-white/40 mb-3">Legal</p>
+            <div className="flex flex-col gap-2">
+              <a href="/privacy" className="hover:text-white transition-colors">Privacy Policy</a>
+              <a href="/terms" className="hover:text-white transition-colors">Terms of Use</a>
+              <a href="/disclaimer" className="hover:text-white transition-colors">Disclaimer</a>
+            </div>
           </div>
         </div>
+        <p className="max-w-5xl mx-auto mt-10 pt-6 border-t border-white/10 text-xs text-white/35">
+          © {new Date().getFullYear()} HandleHunt. Availability results are estimates, not registration guarantees.
+        </p>
       </footer>
     </main>
   );
