@@ -337,7 +337,7 @@ export default function Home() {
       <footer className="bg-black border-t border-white/10 px-5 md:px-16 py-12 text-sm text-white/60">
         <div className="max-w-5xl mx-auto grid gap-10 md:grid-cols-3">
           <div>
-            <p className="font-italiana text-white text-2xl mb-2">HandleHunt</p>
+            <p className="font-italiana text-white text-2xl mb-2">HandleForge</p>
             <p className="max-w-sm leading-relaxed">
               Discovery venue for rare short Instagram usernames. Estimates only.
               Not affiliated with Meta or Instagram.
@@ -361,7 +361,7 @@ export default function Home() {
           </div>
         </div>
         <p className="max-w-5xl mx-auto mt-10 pt-6 border-t border-white/10 text-xs text-white/35">
-          © {new Date().getFullYear()} HandleHunt. Availability results are estimates, not registration guarantees.
+          © {new Date().getFullYear()} HandleForge. Availability results are estimates, not registration guarantees.
         </p>
       </footer>
     </main>
