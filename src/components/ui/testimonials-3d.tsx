@@ -76,7 +76,7 @@ function Column({
       reverse={reverse}
       repeat={2}
       className={className}
-      style={{ ["--duration" as string]: duration, height: 360 }}
+      style={{ ["--duration" as string]: duration, height: 380 }}
     >
       {cards}
     </Marquee>
@@ -98,21 +98,18 @@ export default function Testimonials3D() {
         </p>
       </div>
 
-      {/* 3D tilt on all devices \u2014 lighter on mobile via CSS */}
-      <div className="relative mx-auto h-[360px] w-full max-w-5xl overflow-hidden">
-        <div
-          className="flex h-full flex-row items-stretch justify-center gap-3 px-2 md:gap-4 testimonial-stage"
-          style={{ willChange: "transform", transform: "translateZ(0)" }}
-        >
+      {/* Outer: perspective. Inner: rotate. No inline transform (it was killing CSS tilt). */}
+      <div className="relative mx-auto h-[400px] w-full max-w-5xl testimonial-wrap">
+        <div className="flex h-full flex-row items-stretch justify-center gap-3 px-2 md:gap-4 testimonial-stage">
           <Column items={col0} duration="28s" className="h-full" />
           <Column items={col1} reverse duration="34s" className="h-full" />
           <Column items={col2} duration="30s" className="h-full hidden sm:flex" />
         </div>
 
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black to-transparent" />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black to-transparent" />
-        <div className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-black to-transparent" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-black to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-black to-transparent z-10" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black to-transparent z-10" />
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-black to-transparent z-10" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-black to-transparent z-10" />
       </div>
     </section>
   );
